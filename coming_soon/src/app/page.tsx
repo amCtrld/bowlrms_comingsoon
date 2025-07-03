@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { Mail, Clock, Sparkles, Users } from "lucide-react"
+import { Mail, Clock, Sparkles } from "lucide-react"
 import FoodDoodles from "../components/doodles"
 
 export default function ComingSoonPage() {
