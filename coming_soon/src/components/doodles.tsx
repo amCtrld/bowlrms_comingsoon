@@ -31,20 +31,20 @@ function getRandoms(count: number) {
 
 export default function FoodDoodles() {
   const doodles = [
-    { icon: ChefHat, size: "w-6 h-6", color: "text-gray-700/40" },
-    { icon: Utensils, size: "w-5 h-5", color: "text-gray-700/35" },
-    { icon: Coffee, size: "w-4 h-4", color: "text-gray-700/40" },
-    { icon: Cookie, size: "w-5 h-5", color: "text-gray-700/35" },
-    { icon: Pizza, size: "w-6 h-6", color: "text-gray-700/40" },
-    { icon: Cake, size: "w-5 h-5", color: "text-gray-700/35" },
-    { icon: Apple, size: "w-4 h-4", color: "text-gray-700/40" },
-    { icon: Soup, size: "w-5 h-5", color: "text-gray-700/35" },
-    { icon: Sandwich, size: "w-6 h-6", color: "text-gray-700/40" },
-    { icon: IceCream, size: "w-5 h-5", color: "text-gray-700/35" },
-    { icon: Grape, size: "w-4 h-4", color: "text-gray-700/40" },
-    { icon: Croissant, size: "w-5 h-5", color: "text-gray-700/35" },
-    { icon: Donut, size: "w-6 h-6", color: "text-gray-700/40" },
-    { icon: Cherry, size: "w-4 h-4", color: "text-gray-700/35" },
+    { icon: ChefHat, size: "w-6 h-6", color: "text-[#ff7d00]/40" },
+    { icon: Utensils, size: "w-5 h-5", color: "text-[#ff7d00]/35" },
+    { icon: Coffee, size: "w-4 h-4", color: "text-[#ff7d00]/40" },
+    { icon: Cookie, size: "w-5 h-5", color: "text-[#ff7d00]/35" },
+    { icon: Pizza, size: "w-6 h-6", color: "text-[#ff7d00]/40" },
+    { icon: Cake, size: "w-5 h-5", color: "text-[#ff7d00]/35" },
+    { icon: Apple, size: "w-4 h-4", color: "text-[#ff7d00]/40" },
+    { icon: Soup, size: "w-5 h-5", color: "text-[#ff7d00]/35" },
+    { icon: Sandwich, size: "w-6 h-6", color: "text-[#ff7d00]/40" },
+    { icon: IceCream, size: "w-5 h-5", color: "text-[#ff7d00]/35" },
+    { icon: Grape, size: "w-4 h-4", color: "text-[#ff7d00]/40" },
+    { icon: Croissant, size: "w-5 h-5", color: "text-[#ff7d00]/35" },
+    { icon: Donut, size: "w-6 h-6", color: "text-[#ff7d00]/40" },
+    { icon: Cherry, size: "w-4 h-4", color: "text-[#ff7d00]/35" },
   ]
 
   const [randoms, setRandoms] = useState<Array<{
