@@ -107,8 +107,8 @@ export default function ComingSoonPage() {
                   <Image
                     src="/images/bowlShot.png"
                     alt="BowlRMS Preview"
-                    width={600} // set to your actual image width
-                    height={400} // set to your actual image height
+                    width={600}
+                    height={400} 
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                     draggable={false}
                   />
