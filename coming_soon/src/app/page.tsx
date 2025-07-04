@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mail, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXTwitter, faWhatsapp, faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 import FoodDoodles from "../components/doodles";
+import Image from "next/image";
 
 export default function ComingSoonPage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -103,11 +104,13 @@ export default function ComingSoonPage() {
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-3xl blur-2xl group-hover:blur-3xl" />
                 <div className="relative overflow-hidden rounded-3xl border border-orange-500/20 group-hover:border-orange-400/40">
-                  <img
+                  <Image
                     src="/images/bowlShot.png"
                     alt="BowlRMS Preview"
+                    width={600} // set to your actual image width
+                    height={400} // set to your actual image height
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-                    draggable="false"
+                    draggable={false}
                   />
                 </div>
               </div>
