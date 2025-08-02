@@ -1,40 +1,154 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { ArrowRight } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXTwitter, faWhatsapp, faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
-import FoodDoodles from "../components/doodles";
-import Image from "next/image";
+import { useState, useEffect, useRef } from "react"
+import { ArrowRight } from "lucide-react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faXTwitter, faWhatsapp, faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons"
+import FoodDoodles from "../components/doodles"
+import Image from "next/image"
 
-export default function ComingSoonPage() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [email, setEmail] = useState("");
-  const [particles, setParticles] = useState<
-    { left: string; top: string; animationDelay: string; animationDuration: string }[]
-  >([]);
+interface FlipCardProps {
+  value: number
+  label: string
+}
+
+function FlipCard({ value, label }: FlipCardProps) {
+  const [displayValue, setDisplayValue] = useState(value)
+  const [isFlipping, setIsFlipping] = useState(false)
+  const prevValueRef = useRef(value)
 
   useEffect(() => {
-    setIsLoaded(true);
+    if (value !== prevValueRef.current) {
+      setIsFlipping(true)
 
+      // After half the animation, update the display value
+      setTimeout(() => {
+        setDisplayValue(value)
+      }, 300)
+
+      // Reset flip state after animation completes
+      setTimeout(() => {
+        setIsFlipping(false)
+        prevValueRef.current = value
+      }, 600)
+    }
+  }, [value])
+
+  const formattedValue = displayValue.toString().padStart(2, "0")
+  const formattedPrevValue = prevValueRef.current.toString().padStart(2, "0")
+
+  return (
+    <div className="text-center">
+      <div className="relative group perspective-1000">
+        <div className="absolute inset-0 rounded-lg blur-sm group-hover:blur-md transition-all duration-300" />
+
+        {/* Flip Card Container */}
+        <div className="relative w-16 h-20 md:w-20 md:h-24">
+          {/* Current Value Card */}
+          <div
+            className={`absolute inset-0 bg-black/40 backdrop-blur-xl rounded-xl border border-orange-500/20 group-hover:border-orange-400/40 transition-all duration-300 transform-style-preserve-3d ${
+              isFlipping ? "animate-flip-out" : ""
+            }`}
+          >
+            <div className="flex items-center justify-center h-full">
+              <div className="text-xl md:text-3xl font-bold text-white tabular-nums">
+                {isFlipping ? formattedPrevValue : formattedValue}
+              </div>
+            </div>
+            {/* Middle dividing line */}
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-orange-500/30 transform -translate-y-px" />
+          </div>
+
+          {/* Next Value Card (shows during flip) */}
+          {isFlipping && (
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-xl rounded-xl border border-orange-500/20 group-hover:border-orange-400/40 transition-all duration-300 transform-style-preserve-3d animate-flip-in">
+              <div className="flex items-center justify-center h-full">
+                <div className="text-xl md:text-3xl font-bold text-white tabular-nums">{formattedValue}</div>
+              </div>
+              {/* Middle dividing line */}
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-orange-500/30 transform -translate-y-px" />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="text-xs md:text-sm text-orange-400/80 font-medium mt-2 tracking-wider">{label}</div>
+    </div>
+  )
+}
+
+export default function ComingSoonPage() {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [email, setEmail] = useState("")
+  const [showEmailPopover, setShowEmailPopover] = useState(false)
+  const [particles, setParticles] = useState<
+    { left: string; top: string; animationDelay: string; animationDuration: string }[]
+  >([])
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  })
+
+  useEffect(() => {
+    setIsLoaded(true)
     // Only generate particles on the client
     const generated = Array.from({ length: 12 }).map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       animationDelay: `${Math.random() * 4}s`,
       animationDuration: `${3 + Math.random() * 2}s`,
-    }));
-    setParticles(generated);
-  }, []);
+    }))
+    setParticles(generated)
+
+    // Countdown timer
+    const targetDate = new Date("2025-08-30T23:59:59").getTime()
+
+    const updateCountdown = () => {
+      const now = new Date().getTime()
+      const difference = targetDate - now
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000),
+        })
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+      }
+    }
+
+    updateCountdown()
+    const interval = setInterval(updateCountdown, 1000)
+
+    // Close popover when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('.email-popover') && !target.closest('.popover-trigger')) {
+        setShowEmailPopover(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const handleSubmit = () => {
     if (email) {
       window.open(
         `mailto:support@bowlrms.com?subject=Early Access Request&body=I'm interested in early access to BowlRMS. My email: ${email}`,
-        "_blank"
-      );
+        "_blank",
+      )
+      // Close popover after submission
+      setShowEmailPopover(false)
     }
-  };
+  }
 
   return (
     <div
@@ -50,7 +164,6 @@ export default function ComingSoonPage() {
     >
       <FoodDoodles />
       <div className="absolute inset-0 bg-black/20" />
-
       <div className="relative z-10 min-h-screen grid grid-cols-1 lg:grid-cols-2">
         {/* Left section */}
         <div className="flex items-center justify-center px-6 py-12">
@@ -77,24 +190,50 @@ export default function ComingSoonPage() {
             </div>
 
             {/* Tagline */}
-            <p className="text-orange-400/80 text-sm font-medium tracking-widest transition-all duration-1000 delay-">
+            <p className="text-orange-400/80 text-sm font-medium tracking-widest transition-all duration-1000 delay-200">
               BowlRMS, 2025
             </p>
 
             {/* Heading */}
             <h1
-              className={`text-4xl md:text-5xl font-bold text-white transition-all duration-1000 delay-400 ${
+              className={`text-3xl md:text-5xl font-bold text-white transition-all duration-1000 delay-400 ${
                 isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
             >
               Coming Soon.
             </h1>
+
+            {/* Flipping Countdown Timer */}
+            <div
+              className={`transition-all duration-1000 delay-600 ${
+                isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              } hidden sm:block`}
+            >
+              <div className="grid grid-cols-4 gap-3 md:gap-6 max-w-md mx-auto">
+                <FlipCard value={timeLeft.days} label="Days" />
+                <FlipCard value={timeLeft.hours} label="Hours" />
+                <FlipCard value={timeLeft.minutes} label="Minutes" />
+                <FlipCard value={timeLeft.seconds} label="Seconds" />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Right section */}
         <div className="flex flex-col items-center justify-center bg-black p-6 md:p-12 relative min-h-[600px]">
           <div className="w-full flex flex-col items-center space-y-8 z-10">
+            <div
+              className={`transition-all duration-1000 delay-600 ${
+              isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              } block lg:hidden`}
+            >
+              <div className="grid grid-cols-4 gap-3 md:gap-6 max-w-md mx-auto">
+              <FlipCard value={timeLeft.days} label="Days" />
+              <FlipCard value={timeLeft.hours} label="Hours" />
+              <FlipCard value={timeLeft.minutes} label="Minutes" />
+              <FlipCard value={timeLeft.seconds} label="Seconds" />
+              </div>
+            </div>
             {/* App Preview Image */}
             <div
               className={`transition-all duration-1000 delay-600 ${
@@ -108,7 +247,7 @@ export default function ComingSoonPage() {
                     src="/images/bowlShot.png"
                     alt="BowlRMS Preview"
                     width={600}
-                    height={400} 
+                    height={400}
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                     draggable={false}
                   />
@@ -117,8 +256,8 @@ export default function ComingSoonPage() {
             </div>
 
             {/* Email Signup */}
-            <div className="w-full space-y-3 text-center ">
-              <div>
+            <div className="w-full space-y-3 text-center relative">
+              <div className="flex items-center justify-center gap-3">
                 <h2
                   className={`text-lg md:text-3xl font-thin text-white transition-all duration-1000 delay-700 ${
                     isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
@@ -126,9 +265,44 @@ export default function ComingSoonPage() {
                 >
                   Join the waitlist
                 </h2>
+                {/* Small device button */}
+                <button
+                  onClick={() => setShowEmailPopover(!showEmailPopover)}
+                  className={`popover-trigger sm:hidden bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-black font-medium px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 ${
+                    isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                  }`}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
+
+              {/* Popover for small devices */}
+              {showEmailPopover && (
+                <div className="email-popover sm:hidden absolute top-full left-1/2 transform -translate-x-1/2 mt-4 w-full max-w-sm mx-auto z-50 mb-8">
+                  <div className="bg-black/90 backdrop-blur-xl rounded-2xl border border-orange-500/30 p-4 shadow-2xl">
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
+                        className="flex-1 px-4 py-3 bg-black/40 backdrop-blur-sm rounded-full focus:outline-none text-white placeholder-white/50 focus:ring-2 focus:ring-orange-500/40 transition-all text-sm"
+                      />
+                      <button
+                        onClick={handleSubmit}
+                        className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-black font-medium px-4 py-3 rounded-full transition-transform transform hover:scale-105 flex items-center"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Regular email input for larger devices */}
               <div
-                className={`w-full max-w-2xl transition-all duration-1000 delay-800 ${
+                className={`hidden sm:block w-full max-w-2xl transition-all duration-1000 delay-800 ${
                   isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
                 }`}
               >
@@ -170,7 +344,6 @@ export default function ComingSoonPage() {
                   support@bowlrms.com
                 </a>
               </div>
-
               {/* Socials */}
               <div className="flex items-center justify-center gap-2">
                 <div className="flex gap-3">
@@ -198,7 +371,7 @@ export default function ComingSoonPage() {
                     aria-label="Instagram (coming soon)"
                     tabIndex={-1}
                     aria-disabled="true"
-                    onClick={e => e.preventDefault()}
+                    onClick={(e) => e.preventDefault()}
                   >
                     <FontAwesomeIcon icon={faInstagram} size="lg" />
                   </a>
@@ -208,7 +381,7 @@ export default function ComingSoonPage() {
                     aria-label="LinkedIn (coming soon)"
                     tabIndex={-1}
                     aria-disabled="true"
-                    onClick={e => e.preventDefault()}
+                    onClick={(e) => e.preventDefault()}
                   >
                     <FontAwesomeIcon icon={faLinkedinIn} size="lg" />
                   </a>
@@ -235,5 +408,5 @@ export default function ComingSoonPage() {
         ))}
       </div>
     </div>
-  );
+  )
 }
