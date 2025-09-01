@@ -103,7 +103,7 @@ export default function ComingSoonPage() {
     setParticles(generated)
 
     // Countdown timer
-    const targetDate = new Date("2025-08-30T23:59:59").getTime()
+    const targetDate = new Date("2025-09-30T23:59:59").getTime()
 
     const updateCountdown = () => {
       const now = new Date().getTime()
