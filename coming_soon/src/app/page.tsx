@@ -149,7 +149,6 @@ export default function BetaLivePage() {
             <div className="md:flex space-y-4 md:space-y-0 justify-center gap-6 text-sm text-white/60 text-center md:text-left">
               {/* Contact */}
               <div className="flex items-center justify-center gap-2">
-                <span>Questions?</span> Contact 
                 <a
                   href="mailto:petrembugua@gmail.com"
                   className="text-orange-400 hover:text-orange-300 transition-colors font-medium"
