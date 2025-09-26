@@ -14,14 +14,14 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "BowlRMS | Coming Soon",
-  description: "Next-gen tools for efficient restaurant operations.",
+  title: "BowlRMS | Beta Release",
+  description: "Run smoother, serve smarter.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "BowlRMS | Coming Soon",
-    description: "Reimagining restaurant management. Join the waitlist.",
+    title: "BowlRMS | Beta Release",
+    description: "Run smoother, serve smarter",
     url: "https://bowlrms.com",
     siteName: "BowlRMS",
     images: [
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "BowlRMS | Coming Soon",
-    description: "Reimagining restaurant management. Join the waitlist.",
+    title: "BowlRMS | Beta Release",
+    description: "Run smoother, serve smarter.",
     images: ["https://bowlrms.com/images/bowlRMSImage.png"],
   },
 }
